@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface ChatMessage {
   role: "user" | "assistant" | "system";
@@ -121,38 +123,84 @@ export async function POST(req: NextRequest) {
     { role: "user", content: message.trim() },
   ];
 
-  try {
-    const ollamaRes = await fetch(
-      "https://speaking.chat.eltaexams.com/api/chat",
-      {
+  const encoder = new TextEncoder();
+
+  // TransformStream: Response is returned immediately with the readable end.
+  // The async writer runs fire-and-forget so each write() is flushed right away
+  // instead of waiting for the whole async function to settle (the ReadableStream
+  // async start() bug where chunks are held until the Promise resolves).
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+
+  const write = (obj: unknown) =>
+    writer.write(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+
+  // Fire and forget – do NOT await this
+  (async () => {
+    await write({ type: "sources", sources: relevantDocs });
+
+    let ollamaRes: Response;
+    try {
+      ollamaRes = await fetch("https://speaking.chat.eltaexams.com/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "qwen2.5:7b-instruct",
-          stream: false,
+          stream: true,
           messages: ollamaMessages,
         }),
-      },
-    );
-
-    if (!ollamaRes.ok) {
-      const errorText = await ollamaRes.text();
-      console.error("[help-chat] Ollama error:", errorText);
-      return NextResponse.json(
-        { error: "AI service unavailable" },
-        { status: 502 },
-      );
+      });
+    } catch (err) {
+      console.error("[help-chat] Fetch error:", err);
+      await write({ type: "error" });
+      await writer.close();
+      return;
     }
 
-    const ollamaData = await ollamaRes.json();
-    const answer: string = ollamaData?.message?.content ?? "Yanıt alınamadı.";
+    if (!ollamaRes.ok || !ollamaRes.body) {
+      const errText = await ollamaRes.text().catch(() => "unknown");
+      console.error("[help-chat] Ollama error:", errText);
+      await write({ type: "error" });
+      await writer.close();
+      return;
+    }
 
-    return NextResponse.json({ answer, sources: relevantDocs });
-  } catch (err) {
-    console.error("[help-chat] Fetch error:", err);
-    return NextResponse.json(
-      { error: "AI service unavailable" },
-      { status: 502 },
-    );
-  }
+    const reader = ollamaRes.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const json = JSON.parse(line);
+            const token: string = json?.message?.content ?? "";
+            if (token) await write({ type: "token", token });
+          } catch {
+            // skip malformed NDJSON lines
+          }
+        }
+      }
+    } finally {
+      await write({ type: "done" });
+      await writer.close();
+    }
+  })();
+
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    },
+  });
 }

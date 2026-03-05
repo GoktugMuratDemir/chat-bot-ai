@@ -14,6 +14,7 @@ interface Message {
   role: "user" | "assistant";
   text: string;
   sources?: Source[];
+  isStreaming?: boolean;
 }
 
 interface HelpWidgetProps {
@@ -60,6 +61,33 @@ export function HelpWidget({
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Direct DOM ref for streaming — bypasses React batching entirely
+  const streamNodeRef = useRef<HTMLDivElement>(null);
+  const streamTextRef = useRef<string>("");
+  // Character-by-character typewriter queue
+  const charQueueRef = useRef<string[]>([]);
+  const drainingRef = useRef(false);
+
+  function drainQueue() {
+    if (drainingRef.current || charQueueRef.current.length === 0) return;
+    drainingRef.current = true;
+    function step() {
+      const char = charQueueRef.current.shift();
+      if (char !== undefined) {
+        streamTextRef.current += char;
+        if (streamNodeRef.current) {
+          streamNodeRef.current.textContent = streamTextRef.current;
+          bottomRef.current?.scrollIntoView({
+            behavior: "instant",
+          } as ScrollIntoViewOptions);
+        }
+        setTimeout(step, 18);
+      } else {
+        drainingRef.current = false;
+      }
+    }
+    step();
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,9 +105,21 @@ export function HelpWidget({
 
     const userMsg: Message = { role: "user", text: trimmed };
     const nextMessages = [...messages, userMsg];
-    setMessages(nextMessages);
+    const assistantIdx = nextMessages.length;
+
+    streamTextRef.current = "";
+    charQueueRef.current = [];
+    drainingRef.current = false;
+    // Add user message + streaming placeholder in one React update
+    setMessages([
+      ...nextMessages,
+      { role: "assistant", text: "", sources: [], isStreaming: true },
+    ]);
     setInput("");
     setLoading(true);
+
+    let collectedSources: Source[] = [];
+    let errorOccurred = false;
 
     try {
       const res = await fetch("/help-chat/api", {
@@ -94,26 +134,66 @@ export function HelpWidget({
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.body) throw new Error("No response body");
 
-      const data: { answer: string; sources: Source[] } = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: data.answer,
-          sources: data.sources ?? [],
-        },
-      ]);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() ?? "";
+
+        for (const part of parts) {
+          const line = part.startsWith("data: ") ? part.slice(6) : part;
+          if (!line.trim()) continue;
+          try {
+            const event = JSON.parse(line);
+            if (event.type === "token") {
+              // Push each character into the queue, drainer writes them one by one
+              for (const char of event.token as string) {
+                charQueueRef.current.push(char);
+              }
+              drainQueue();
+            } else if (event.type === "sources") {
+              collectedSources = event.sources ?? [];
+            } else if (event.type === "error") {
+              errorOccurred = true;
+            }
+          } catch {
+            // skip malformed SSE lines
+          }
+        }
+      }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: "Bağlantı hatası oluştu. Lütfen tekrar deneyin.",
-          sources: [],
-        },
-      ]);
+      errorOccurred = true;
     } finally {
+      // Wait for the typewriter drainer to finish before committing to React state
+      await new Promise<void>((resolve) => {
+        const poll = () => {
+          if (charQueueRef.current.length === 0 && !drainingRef.current)
+            resolve();
+          else setTimeout(poll, 30);
+        };
+        poll();
+      });
+      // Commit the accumulated text into React state in one single update
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[assistantIdx] = {
+          role: "assistant",
+          text: errorOccurred
+            ? "Bağlantı hatası oluştu. Lütfen tekrar deneyin."
+            : streamTextRef.current,
+          sources: collectedSources,
+          isStreaming: false,
+        };
+        return updated;
+      });
       setLoading(false);
     }
   }
@@ -341,7 +421,19 @@ export function HelpWidget({
                     wordBreak: "break-word",
                   }}
                 >
-                  {msg.text}
+                  {msg.isStreaming ? (
+                    // Streaming: a bare div whose textContent is written directly
+                    // to the DOM on every token — no React re-render needed
+                    <div
+                      ref={streamNodeRef}
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                      }}
+                    />
+                  ) : (
+                    msg.text
+                  )}
                 </div>
 
                 {msg.sources && msg.sources.length > 0 && (
@@ -392,8 +484,8 @@ export function HelpWidget({
               </div>
             ))}
 
-            {/* Typing indicator */}
-            {loading && (
+            {/* Typing indicator – shown only while waiting for the first token */}
+            {loading && messages[messages.length - 1]?.text === "" && (
               <div
                 className="hw-msg-in"
                 style={{ display: "flex", alignItems: "center", gap: 8 }}
