@@ -62,6 +62,22 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <Link
+                href="/help-chat"
+                target="_blank"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                title="Yardım Asistanı"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3C6.5 3 2 6.58 2 11a7.77 7.77 0 0 0 2.75 5.74L2 22l5.5-2.5C8.9 20.14 10.41 20.5 12 20.5c5.5 0 10-3.58 10-8S17.5 3 12 3z" />
+                </svg>
+                Yardım
+              </Link>
+              <Link
                 href="/auth/login"
                 className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
               >

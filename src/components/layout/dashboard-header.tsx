@@ -1,6 +1,7 @@
 "use client";
 
-import { Power } from "lucide-react";
+import { Power, HelpCircle } from "lucide-react";
+import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { Student, Teacher, School, SystemAdmin } from "@/types";
 import { getFullName } from "@/utils";
@@ -72,6 +73,14 @@ export default function DashboardHeader() {
         <div className="w-11 h-11 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shadow-md hover:shadow-lg transition-all hover:scale-105">
           {getUserInitials()}
         </div>
+        <Link
+          href="/help-chat"
+          target="_blank"
+          className="group w-10 h-10 rounded-full bg-white hover:bg-indigo-50 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow-md border border-gray-100 hover:border-indigo-200"
+          title="Yardım Asistanı"
+        >
+          <HelpCircle className="w-5 h-5 text-gray-500 group-hover:text-indigo-500 transition-colors" />
+        </Link>
         <button
           onClick={handleLogout}
           className="group w-10 h-10 rounded-full cursor-pointer bg-white hover:bg-red-50 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow-md border border-gray-100 hover:border-red-200"
