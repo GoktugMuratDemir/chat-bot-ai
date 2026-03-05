@@ -1,0 +1,421 @@
+@import "tailwindcss";
+
+/**
+ * Axebug Comics - StoryMind Theme Configuration
+ * 
+ * Bu dosya PDF'den alınan tüm renk ve font tanımlamalarını içerir.
+ * Tüm renkler Tailwind standart palette kullanılarak tanımlanmıştır.
+ * 
+ * TEXT COLORS:
+ * - text-gray-400   → #AFADB1 (Muted)
+ * - text-gray-500   → #8C9191 (Subtitle)
+ * - text-gray-700   → #4A4E58 (Heading)
+ * - text-gray-800   → #35393F (Dark)
+ * - text-slate-800  → #3C4146 (Task numbers)
+ * 
+ * BACKGROUNDS:
+ * - bg-pearl-500    → #F3EFF2 (My Tasks)
+ * - bg-cream-500    → #FCF6F2 (Task page)
+ * - bg-mint-200     → #EBFFF6 (Exam page)
+ * - bg-lavender-200 → #F8F2FF (Quiz page)
+ * 
+ * SCORE BOARD:
+ * - text-amber-500  → EXAM (Yellow)
+ * - text-violet-500 → QUIZ (Purple)
+ * - text-cyan-500   → TASK (Cyan)
+ * - text-lime-500   → OVERALL (Lime)
+ * - text-red-500    → Decline (Red)
+ * 
+ * SKILLS:
+ * - text-fuchsia-500    → READING (Pink)
+ * - text-yellow-500     → WRITING (Yellow)
+ * - text-sky-500        → LISTENING (Sky Blue)
+ * - text-rose-500       → SPEAKING (Hot Pink)
+ * - text-chartreuse-500 → LANGUAGE SKILLS (Lime)
+ * 
+ * BUTTONS & BRANDING:
+ * - bg-teal-500   → Login button
+ * - text-green-500 → Logo color
+ * - bg-slate-500  → Input background
+ * 
+ * Detaylı kullanım için: COLOR-REFERENCE.md
+ */
+
+/* Tailwind CSS v4 @theme directive - CSS linter'lar henüz desteklemiyor */
+/* @ts-ignore */
+@theme inline {
+  /* Teal - Login buton rengi (#469696) */
+  --color-teal-50: #e8f5f5;
+  --color-teal-100: #c2e5e5;
+  --color-teal-200: #9bd4d4;
+  --color-teal-300: #73c4c4;
+  --color-teal-400: #5eb0b0;
+  --color-teal-500: #469696;    /* Login button - bg-teal-500 */
+  --color-teal-600: #3d8484;
+  --color-teal-700: #336e6e;
+  --color-teal-800: #295858;
+  --color-teal-900: #1f4242;
+
+  /* Green - Logo yeşil rengi (#6BBE6F - Dashboard logo) */
+  --color-green-50: #f2f9ed;
+  --color-green-100: #dff0d0;
+  --color-green-200: #cbe7b3;
+  --color-green-300: #b8de96;
+  --color-green-400: #a5d57d;
+  --color-green-500: #6bbe6f;    /* Logo color - text-green-500 - Dashboard */
+  --color-green-600: #5fa561;
+  --color-green-700: #4d8850;
+  --color-green-800: #3c6b3f;
+  --color-green-900: #2a4e2d;
+
+  /* Slate - Input arka plan (#42607E) */
+  --color-slate-50: #f8f9fa;
+  --color-slate-100: #f1f3f5;
+  --color-slate-200: #e9ecef;
+  --color-slate-300: #dee2e6;
+  --color-slate-400: #ced4da;
+  --color-slate-500: #42607e;    /* Input bg - bg-slate-500/50 */
+  --color-slate-600: #39556e;
+  --color-slate-700: #2f475c;
+  --color-slate-800: #3c4146;    /* Task numbers - text-slate-800 */
+  --color-slate-900: #212529;
+
+  /* Amber - Exam rengi (#FEC714) */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fff5c7;
+  --color-amber-200: #ffeea3;
+  --color-amber-300: #ffe77f;
+  --color-amber-400: #fee05b;
+  --color-amber-500: #fec714;    /* EXAM - text-amber-500 */
+  --color-amber-600: #e5b312;
+  --color-amber-700: #bf950f;
+  --color-amber-800: #99770c;
+  --color-amber-900: #735909;
+
+  /* Violet - Quiz rengi (#AA78DC) */
+  --color-violet-50: #f5edf9;
+  --color-violet-100: #e6d0f0;
+  --color-violet-200: #d6b3e7;
+  --color-violet-300: #c796de;
+  --color-violet-400: #b887d5;
+  --color-violet-500: #aa78dc;    /* QUIZ - text-violet-500 */
+  --color-violet-600: #996cc6;
+  --color-violet-700: #7f5aa5;
+  --color-violet-800: #664884;
+  --color-violet-900: #4c3663;
+
+  /* Cyan - Task rengi (#64C8C8) */
+  --color-cyan-50: #e8f7f7;
+  --color-cyan-100: #c1ebeb;
+  --color-cyan-200: #9adfdf;
+  --color-cyan-300: #73d3d3;
+  --color-cyan-400: #64c8c8;
+  --color-cyan-500: #64c8c8;    /* TASK - text-cyan-500 */
+  --color-cyan-600: #5ab4b4;
+  --color-cyan-700: #4a9696;
+  --color-cyan-800: #3b7878;
+  --color-cyan-900: #2c5a5a;
+
+  /* Lime - Overall rengi (#A0EB50) */
+  --color-lime-50: #f2fce8;
+  --color-lime-100: #dff7c1;
+  --color-lime-200: #ccf39a;
+  --color-lime-300: #b8ee73;
+  --color-lime-400: #a5e95c;
+  --color-lime-500: #a0eb50;    /* OVERALL - text-lime-500 */
+  --color-lime-600: #90d448;
+  --color-lime-700: #77b03c;
+  --color-lime-800: #5e8c30;
+  --color-lime-900: #456824;
+
+  /* Red - Decline rengi (#FA5046) */
+  --color-red-50: #ffebe9;
+  --color-red-100: #ffc7c3;
+  --color-red-200: #ffa39d;
+  --color-red-300: #ff7f77;
+  --color-red-400: #fa6b61;
+  --color-red-500: #fa5046;    /* Decline - text-red-500 */
+  --color-red-600: #e1483f;
+  --color-red-700: #bb3c34;
+  --color-red-800: #953029;
+  --color-red-900: #6f241e;
+
+  /* Fuchsia - Reading rengi (#F59BEC) */
+  --color-fuchsia-50: #fef3fc;
+  --color-fuchsia-100: #fce0f8;
+  --color-fuchsia-200: #facdf4;
+  --color-fuchsia-300: #f8baf0;
+  --color-fuchsia-400: #f6aaee;
+  --color-fuchsia-500: #f59bec;    /* READING - text-fuchsia-500 */
+  --color-fuchsia-600: #dc8bd4;
+  --color-fuchsia-700: #b774b0;
+  --color-fuchsia-800: #925d8c;
+  --color-fuchsia-900: #6d4668;
+
+  /* Yellow - Writing rengi (#FFFF00) */
+  --color-yellow-50: #ffffeb;
+  --color-yellow-100: #ffffc7;
+  --color-yellow-200: #ffffa3;
+  --color-yellow-300: #ffff7f;
+  --color-yellow-400: #ffff5b;
+  --color-yellow-500: #ffff00;    /* WRITING - text-yellow-500 */
+  --color-yellow-600: #e5e500;
+  --color-yellow-700: #bfbf00;
+  --color-yellow-800: #999900;
+  --color-yellow-900: #737300;
+
+  /* Sky - Listening rengi (#46BEDC) */
+  --color-sky-50: #e8f6fa;
+  --color-sky-100: #c2e8f2;
+  --color-sky-200: #9bdaea;
+  --color-sky-300: #73cce2;
+  --color-sky-400: #5cc5dd;
+  --color-sky-500: #46bedc;    /* LISTENING - text-sky-500 */
+  --color-sky-600: #3fabc6;
+  --color-sky-700: #348ea5;
+  --color-sky-800: #2a7184;
+  --color-sky-900: #1f5463;
+
+  /* Rose - Speaking rengi (#FF6699) */
+  --color-rose-50: #ffebf2;
+  --color-rose-100: #ffc7dd;
+  --color-rose-200: #ffa3c8;
+  --color-rose-300: #ff7fb3;
+  --color-rose-400: #ff73a6;
+  --color-rose-500: #ff6699;    /* SPEAKING - text-rose-500 */
+  --color-rose-600: #e55c8a;
+  --color-rose-700: #bf4d73;
+  --color-rose-800: #993e5c;
+  --color-rose-900: #732e45;
+
+  /* Chartreuse - Language Skills (#DCFA78) */
+  --color-chartreuse-50: #f8fef0;
+  --color-chartreuse-100: #eefcd6;
+  --color-chartreuse-200: #e4fabc;
+  --color-chartreuse-300: #dcfa78;
+  --color-chartreuse-400: #d4f95e;
+  --color-chartreuse-500: #dcfa78;    /* LANGUAGE SKILLS - text-chartreuse-500 */
+  --color-chartreuse-600: #c6e16c;
+  --color-chartreuse-700: #a5bc5a;
+  --color-chartreuse-800: #849748;
+  --color-chartreuse-900: #637136;
+
+  /* Gray - Text colors (PDF'den) */
+  --color-gray-50: #f9fafa;
+  --color-gray-100: #f3f3f4;
+  --color-gray-200: #e8e8ea;
+  --color-gray-300: #d1d2d5;
+  --color-gray-400: #afadb1;    /* Muted - text-gray-400 */
+  --color-gray-500: #8c9191;    /* Light - text-gray-500 */
+  --color-gray-600: #6f7175;
+  --color-gray-700: #4a4e58;    /* Heading - text-gray-700 */
+  --color-gray-800: #35393f;    /* Dark - text-gray-800 */
+  --color-gray-900: #1f2226;
+
+  /* Neutral - Background tones */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Custom Background Colors (PDF'den) */
+  --color-pearl-50: #fefefe;
+  --color-pearl-100: #fcfbfc;
+  --color-pearl-200: #f9f7f9;
+  --color-pearl-300: #f6f3f6;
+  --color-pearl-400: #f4f1f4;
+  --color-pearl-500: #f3eff2;    /* My Tasks zemin - bg-pearl-500 */
+  --color-pearl-600: #dbd7da;
+  --color-pearl-700: #b3b0b3;
+  --color-pearl-800: #8a888a;
+  --color-pearl-900: #626162;
+
+  --color-cream-50: #fefdfb;
+  --color-cream-100: #fefcf9;
+  --color-cream-200: #fdfaf6;
+  --color-cream-300: #fdf9f4;
+  --color-cream-400: #fdf7f3;
+  --color-cream-500: #fcf6f2;    /* Task zemin - bg-cream-500 */
+  --color-cream-600: #e3ddd9;
+  --color-cream-700: #bab6b3;
+  --color-cream-800: #918e8c;
+  --color-cream-900: #686765;
+
+  --color-mint-50: #f5fffa;
+  --color-mint-100: #edfff7;
+  --color-mint-200: #ebfff6;    /* Exam zemin - bg-mint-200 */
+  --color-mint-300: #d4ffed;
+  --color-mint-400: #bcffe4;
+  --color-mint-500: #a5ffdb;
+  --color-mint-600: #94e6c5;
+  --color-mint-700: #7abfa4;
+  --color-mint-800: #619983;
+  --color-mint-900: #487362;
+
+  --color-lavender-50: #fcfaff;
+  --color-lavender-100: #faf6ff;
+  --color-lavender-200: #f8f2ff;    /* Quiz zemin - bg-lavender-200 */
+  --color-lavender-300: #f0e6ff;
+  --color-lavender-400: #e8daff;
+  --color-lavender-500: #e0ceff;
+  --color-lavender-600: #cab9e6;
+  --color-lavender-700: #a799bf;
+  --color-lavender-800: #847a99;
+  --color-lavender-900: #625b73;
+
+  /* Font Families */
+  --font-montserrat: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: var(--font-montserrat);
+  --font-family-sans: var(--font-montserrat);
+  
+  /* Font Sizes - Based on PDF specifications */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+  --font-size-57: 3.5625rem;    /* 57px - Logo small */
+  --font-size-6xl: 3.75rem;     /* 60px */
+  --font-size-69: 4.3125rem;    /* 69px - Main headings */
+  --font-size-7xl: 4.5rem;      /* 72px */
+  --font-size-8xl: 6rem;        /* 96px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* Border Radius */
+  --radius-sm: 0.125rem;      /* 2px */
+  --radius: 0.25rem;          /* 4px */
+  --radius-md: 0.375rem;      /* 6px */
+  --radius-lg: 0.5rem;        /* 8px */
+  --radius-xl: 0.75rem;       /* 12px */
+  --radius-2xl: 1rem;         /* 16px */
+  --radius-3xl: 1.5rem;       /* 24px */
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Spacing Scale */
+  --spacing-px: 1px;
+  --spacing-0: 0;
+  --spacing-0-5: 0.125rem;    /* 2px */
+  --spacing-1: 0.25rem;       /* 4px */
+  --spacing-1-5: 0.375rem;    /* 6px */
+  --spacing-2: 0.5rem;        /* 8px */
+  --spacing-2-5: 0.625rem;    /* 10px */
+  --spacing-3: 0.75rem;       /* 12px */
+  --spacing-3-5: 0.875rem;    /* 14px */
+  --spacing-4: 1rem;          /* 16px */
+  --spacing-5: 1.25rem;       /* 20px */
+  --spacing-6: 1.5rem;        /* 24px */
+  --spacing-7: 1.75rem;       /* 28px */
+  --spacing-8: 2rem;          /* 32px */
+  --spacing-9: 2.25rem;       /* 36px */
+  --spacing-10: 2.5rem;       /* 40px */
+  --spacing-11: 2.75rem;      /* 44px */
+  --spacing-12: 3rem;         /* 48px */
+  --spacing-14: 3.5rem;       /* 56px */
+  --spacing-16: 4rem;         /* 64px */
+  --spacing-20: 5rem;         /* 80px */
+  --spacing-24: 6rem;         /* 96px */
+  --spacing-28: 7rem;         /* 112px */
+  --spacing-32: 8rem;         /* 128px */
+  --spacing-36: 9rem;         /* 144px */
+  --spacing-40: 10rem;        /* 160px */
+  --spacing-44: 11rem;        /* 176px */
+  --spacing-48: 12rem;        /* 192px */
+  --spacing-52: 13rem;        /* 208px */
+  --spacing-56: 14rem;        /* 224px */
+  --spacing-60: 15rem;        /* 240px */
+  --spacing-64: 16rem;        /* 256px */
+  --spacing-72: 18rem;        /* 288px */
+  --spacing-80: 20rem;        /* 320px */
+  --spacing-96: 24rem;        /* 384px */
+
+  /* Border Radius - Dashboard cards */
+  --radius-4xl: 2rem;         /* 32px - Dashboard cards */
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: var(--font-montserrat);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Windows-Style Modern Scrollbar - Project Theme */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-left: 1px solid #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 2px solid #f0f0f0;
+  border-radius: 0;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #469696;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #3d8484;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 #f0f0f0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
