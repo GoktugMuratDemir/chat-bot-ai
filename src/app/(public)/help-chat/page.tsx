@@ -1,6 +1,6 @@
 "use client";
 
-import { HelpWidget } from "./_shared/components";
+import { HelpWidget } from "./_shared";
 
 export default function HelpChatPage() {
   return (
